@@ -2,19 +2,22 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using System.Linq;
 
 public class GameFlow : MonoBehaviour
 {
     [SerializeField] private GameObject EndScreen;
-    [SerializeField] private Enemy[] _enemies;
     [SerializeField] private Player _player;
 
+    private List<Enemy> _enemies;
     private int _deadEnemyCounter = 0;
 
     public event UnityAction AllEnemyDead;
 
     private void Start()
     {
+        _enemies = FindObjectsOfType<Enemy>().ToList();
+
         foreach (var enemy in _enemies)
         {
             enemy.Died += UpdateDeadEnemyCounter;
@@ -43,7 +46,7 @@ public class GameFlow : MonoBehaviour
 
         enemy.Died -= UpdateDeadEnemyCounter;
 
-        if (_deadEnemyCounter >= _enemies.Length)
+        if (_deadEnemyCounter >= _enemies.Count)
         {
             AllEnemyDead?.Invoke();
         }
